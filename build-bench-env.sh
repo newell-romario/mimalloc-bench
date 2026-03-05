@@ -64,7 +64,7 @@ readonly version_tbb=v2021.9.0
 readonly version_tc=gperftools-2.18
 readonly version_tcg=81f4e44f23f2936303f9404fee7315119b9df623 # 2026-02-23
 readonly version_yal=main
-
+readonly version_rmalloc=master
 # benchmark versions
 readonly version_redis=6.2.7
 readonly version_lean=21d264a66d53b0a910178ae7d9529cb5886a39b6 # build fix for recent compilers
@@ -104,6 +104,7 @@ setup_tbb=0
 setup_tc=0
 setup_tcg=0
 setup_yal=0
+setup_rmalloc=0
 
 # bigger benchmarks
 setup_bench=0
@@ -147,6 +148,7 @@ while : ; do
         setup_tbb=$flag_arg
         setup_tc=$flag_arg
         setup_yal=$flag_arg
+        setup_rmalloc=$flag_arg
         if [ -z "$darwin" ]; then
           setup_tcg=$flag_arg       # lacking 'malloc.h'
           setup_dh=$flag_arg
@@ -222,8 +224,11 @@ while : ; do
         setup_linux=$flag_arg;;
     rp)
         setup_rp=$flag_arg;;
+    rmalloc) 
+        setup_rmalloc=$flag_arg;;
     sc)
         setup_sc=$flag_arg;;
+
     scudo)
         setup_scudo=$flag_arg;;
     sg)
@@ -271,6 +276,7 @@ while : ; do
         echo "  nomesh                       setup mesh allocator w/o meshing ($version_mesh)"
         echo "  pa                           setup PartitionAlloc ($version_pa)"
         echo "  rp                           setup rpmalloc ($version_rp)"
+        echo "  rmalloc                      setupd rmalloc($version_rmalloc)"
         echo "  sc                           setup scalloc ($version_sc)"
         echo "  scudo                        setup scudo ($version_scudo)"
         echo "  sg                           setup slimguard ($version_sg)"
@@ -646,6 +652,14 @@ if test "$setup_rp" = "1"; then
   # see https://github.com/mjansson/rpmalloc/issues/316
   sed -i 's/-Werror//' build.ninja
   ninja
+  popd
+fi
+
+if test "$setup_rmalloc" = "1"; then 
+  checkout rmalloc $version_rmalloc https://github.com/newell-romario/rmalloc.git
+  cmake -B build
+  cd build
+  make
   popd
 fi
 
