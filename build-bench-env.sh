@@ -142,7 +142,7 @@ while : ; do
         setup_lp=$flag_arg
         setup_mi=$flag_arg
         setup_mi2=$flag_arg
-        setup_pa=$flag_arg
+       # setup_pa=$flag_arg
         setup_sn=$flag_arg
         setup_sg=$flag_arg
         setup_tbb=$flag_arg
@@ -150,7 +150,7 @@ while : ; do
         setup_yal=$flag_arg
         setup_rmalloc=$flag_arg
         if [ -z "$darwin" ]; then
-          setup_tcg=$flag_arg       # lacking 'malloc.h'
+          #setup_tcg=$flag_arg       # lacking 'malloc.h'
           setup_dh=$flag_arg
           setup_fg=$flag_arg
           setup_lf=$flag_arg
@@ -212,8 +212,8 @@ while : ; do
         setup_mi2=$flag_arg;;
     nomesh)
         setup_nomesh=$flag_arg;;
-    pa)
-        setup_pa=$flag_arg;;
+    #pa)
+    #    setup_pa=$flag_arg;;
     packages)
         setup_packages=$flag_arg;;
     redis)
@@ -241,8 +241,8 @@ while : ; do
         setup_tbb=$flag_arg;;
     tc)
         setup_tc=$flag_arg;;
-    tcg)
-        setup_tcg=$flag_arg;;
+    #tcg)
+    #   setup_tcg=$flag_arg;;
     yal)
         setup_yal=$flag_arg;;
 
@@ -450,7 +450,7 @@ if test "$setup_packages" = "1"; then
       ghostscript libatomic libstdc++ which gflags-devel xz readline-devel snappy-devel"
     # bazel5 is broken on the copr: https://github.com/bazelbuild/bazel/issues/19295
     #dnfinstallbazel
-  elif grep -q -e 'ID=debian' -e 'ID=ubuntu' /etc/os-release 2>/dev/null; then
+  elif grep -q -e 'ID=debian' -e 'ID=ubuntu' -e 'ubuntu' /etc/os-release  2>/dev/null; then
     echo "updating package database... ($SUDO apt update)"
     $SUDO apt update -qq
     aptinstall "build-essential git gpg g++ clang lld llvm-dev unzip dos2unix linuxinfo bc libgmp-dev wget \
@@ -584,10 +584,8 @@ if test "$setup_dh" = "1"; then
   checkout dh $version_dh https://github.com/emeryberger/DieHard
   # remove all the historical useless junk
   rm -rf ./benchmarks/ ./src/archipelago/ ./src/build/ ./src/exterminator/ ./src/local/ ./src/original-diehard/ ./src/replicated/ ./docs
-  cd src
   cmake -S . -B build
   cmake --build build -j `nproc`
-  cd ../..
   popd
 fi
 
